@@ -1,43 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <!-- Explication : Ceci définit le type de document, la langue, et les métadonnées de base -->
     <meta charset="UTF-8" />
-    <!-- Explication : Rendre la page responsive sur mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Explication : Titre de la page affiché dans l’onglet du navigateur -->
     <title>Application Météo</title>
-    <!-- Explication : Lien vers la feuille de style CSS externe -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <!-- Explication : Une section qui encapsule toute l'application météo -->
+    <!-- Une section qui encapsule toute l'application météo -->
     <div class="weather-app">
-        <!-- Explication : Un titre principal de la page -->
-        <h1>Application Météo</h1>
+        <h1>Application Mévinéo</h1>
 
-        <!-- Explication : Formulaire pour rechercher la météo d'une ville -->
         <form id="search-form">
-            <!-- Explication : Champ texte pour saisir le nom de la ville -->
             <input type="text" id="city-input" placeholder="Entrez une ville" required>
-            <!-- Explication : Bouton de soumission -->
             <button type="submit">Rechercher</button>
         </form>
 
-        <!-- Explication : Zone où le résultat de la météo sera affiché -->
         <div id="weather-result">
-            <!-- Explication : Le nom de la ville sera affiché ici -->
             <h2 id="city-name"></h2>
-            <!-- Explication : La description de la météo, ex : Ciel dégagé -->
             <p id="description"></p>
-            <!-- Explication : La température sera affichée ici -->
             <p id="temperature"></p>
-            <!-- Explication : L'icône météo sera affichée ici -->
             <img id="weather-icon" alt="Icône Météo" style="display: none;">
+            <img id="city-image" alt="Image de la ville" style="display:none; width:100%; height:auto;">
+
+        </div>
+        <div class="city-image-container">
+            <img id="city-image" alt="Image de la ville" style="display:none; width:100%; height:auto; margin-top:20px;">
         </div>
     </div>
 
-    <!-- Explication : Ajout du script JavaScript -->
     <script src="assets/js/script.js"></script>
 </body>
 </html>

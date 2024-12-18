@@ -5,33 +5,41 @@
     box-sizing: border-box;
 }
 
-/* Explication : On applique une police lisible et un alignement centré à toute la page */
+/* On applique une police lisible et un alignement centré à toute la page */
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #c3ecb2, #7dd3f1);
+    /* background: linear-gradient(135deg, #c3ecb2, #7dd3f1); */
+
+    /* dégradé linéaire du haut vers le bas */
+    background: linear-gradient(to bottom, 
+        /* Couleur du haut (rose pastel) */
+        #fcc2d7 0%, 
+        /* Couleur intermédiaire (teinte claire) */
+        #fbe8d3 50%, 
+        /* Couleur du bas (teinte turquoise) */
+        #7dd3f1 100%
+    );
     height: 100vh;
 }
 
-/* Explication : Style du conteneur principal de l’application */
+/* Style du conteneur principal de l’application */
 .weather-app {
     background: #ffffffcc;
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    max-width: 300px;
+    max-width: 600px;
     width: 100%;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-/* Explication : Style du titre principal */
 .weather-app h1 {
     margin-bottom: 20px;
 }
 
-/* Explication : Style du formulaire et des champs de texte */
 #search-form {
     display: flex;
     margin-bottom: 20px;
@@ -59,7 +67,6 @@ body {
     background: #2563eb;
 }
 
-/* Explication : Style de la zone de résultat météo */
 #weather-result h2 {
     margin-bottom: 10px;
 }
@@ -67,4 +74,10 @@ body {
 #weather-result p {
     margin-bottom: 5px;
     font-size: 1.1em;
+}
+
+.city-image-container {
+    margin-top: 20px;
+    width: 100%;
+    
 }
