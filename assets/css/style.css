@@ -1,0 +1,70 @@
+/* Explication : On remet certaines marges et paddings à zéro pour avoir une base propre */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Explication : On applique une police lisible et un alignement centré à toute la page */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #c3ecb2, #7dd3f1);
+    height: 100vh;
+}
+
+/* Explication : Style du conteneur principal de l’application */
+.weather-app {
+    background: #ffffffcc;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 300px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Explication : Style du titre principal */
+.weather-app h1 {
+    margin-bottom: 20px;
+}
+
+/* Explication : Style du formulaire et des champs de texte */
+#search-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+#search-form input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid #ccc;
+    outline: none;
+}
+
+#search-form button {
+    padding: 8px 16px;
+    border: none;
+    background: #3b82f6;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+#search-form button:hover {
+    background: #2563eb;
+}
+
+/* Explication : Style de la zone de résultat météo */
+#weather-result h2 {
+    margin-bottom: 10px;
+}
+
+#weather-result p {
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
