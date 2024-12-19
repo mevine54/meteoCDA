@@ -1,47 +1,68 @@
 const weatherForm = document.getElementById('weather-form');
-    const resultsContainer = document.getElementById('results');
-    const weatherContainer = document.getElementById('weather-container');
+        const resultsContainer = document.getElementById('results');
+        const weatherContainer = document.getElementById('weather-container');
 
-    weatherForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const characterName = document.getElementById('character-name').value.toLowerCase();
+        // API Endpoints et images
+        const endpoints = {
+            people: "https://www.swapi.tech/api/people",
+            planets: "https://www.swapi.tech/api/planets",
+            starships: "https://www.swapi.tech/api/starships",
+            vehicles: "https://www.swapi.tech/api/vehicles",
+            species: "https://www.swapi.tech/api/species",
+            films: "https://www.swapi.tech/api/films",
+        };
 
-        try {
-            const proxyUrl = `https://www.swapi.tech/api/people/?name=${characterName}`;
-            const response = await fetch(proxyUrl);
-            const data = await response.json();
+        const imageBaseUrls = {
+            people: "https://starwars-visualguide.com/assets/img/characters",
+            planets: "https://starwars-visualguide.com/assets/img/planets",
+            starships: "https://starwars-visualguide.com/assets/img/starships",
+            vehicles: "https://starwars-visualguide.com/assets/img/vehicles",
+            species: "https://starwars-visualguide.com/assets/img/species",
+            films: "https://starwars-visualguide.com/assets/img/films",
+        };
 
-            if (!data.result || data.result.length === 0) {
-                resultsContainer.innerHTML = '<p>Aucun personnage trouvé.</p>';
-                return;
+        weatherForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('search-input').value.toLowerCase();
+            resultsContainer.innerHTML = "<p>Recherche en cours...</p>";
+
+            let found = false;
+
+            for (const [category, endpoint] of Object.entries(endpoints)) {
+                try {
+                    const response = await fetch(`${endpoint}/?name=${query}`);
+                    const data = await response.json();
+
+                    if (data.result && data.result.length > 0) {
+                        const item = data.result[0];
+                        const imageUrl = `${imageBaseUrls[category]}/${item.uid}.jpg`;
+
+                        const resultHTML = `
+                            <div class="weather-info">
+                                <h2>${item.properties.name || item.properties.title}</h2>
+                                <p>Catégorie : ${category}</p>
+                                <img src="${imageUrl}" alt="Image de ${item.properties.name || item.properties.title}">
+                                <div class="details">
+                                    <p><strong>Taille :</strong> ${item.properties.height || 'N/A'} cm</p>
+                                    <p><strong>Poids :</strong> ${item.properties.mass || 'N/A'} kg</p>
+                                    <p><strong>Couleur de peau :</strong> ${item.properties.skin_color || 'N/A'}</p>
+                                    <p><strong>Couleur des yeux :</strong> ${item.properties.eye_color || 'N/A'}</p>
+                                    <p><strong>Date de naissance :</strong> ${item.properties.birth_year || 'N/A'}</p>
+                                    <p><strong>Genre :</strong> ${item.properties.gender || 'N/A'}</p>
+                                </div>
+                            </div>
+                        `;
+
+                        resultsContainer.innerHTML = resultHTML;
+                        found = true;
+                        break;
+                    }
+                } catch (error) {
+                    console.error(`Erreur lors de la recherche dans ${category}:`, error);
+                }
             }
 
-            const character = data.result[0].properties;
-            const characterUid = data.result[0].uid; // Récupération de l'UID du personnage
-            const characterImage = `https://starwars-visualguide.com/assets/img/characters/${characterUid}.jpg`;
-
-            const characterHTML = `
-                <div class="weather-info">
-                    <h2>${character.name}</h2>
-                    <p>Genre : ${character.gender}</p>
-                    <p>Date de naissance : ${character.birth_year}</p>
-                    <p>Couleur des yeux : ${character.eye_color}</p>
-                    <p>Couleur des cheveux : ${character.hair_color}</p>
-                    <p>Taille : ${character.height} cm</p>
-                    <p>Poids : ${character.mass} kg</p>
-                    <p>Couleur de peau : ${character.skin_color}</p>
-                </div>
-            `;
-
-            resultsContainer.innerHTML = characterHTML;
-
-            // Ajouter l'image comme fond du conteneur
-            weatherContainer.style.backgroundImage = `url(${characterImage})`;
-            weatherContainer.style.backgroundSize = 'cover';
-            weatherContainer.style.backgroundPosition = 'center';
-
-        } catch (error) {
-            console.error(error);
-            resultsContainer.innerHTML = `<p>Une erreur est survenue : ${error.message}</p>`;
-        }
-    });
+            if (!found) {
+                resultsContainer.innerHTML = '<p>Aucun résultat trouvé.</p>';
+            }
+        });
