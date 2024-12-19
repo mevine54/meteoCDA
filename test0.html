@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche Météo</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB, #f0f0f0);
+    position: relative;
+    overflow: hidden;
+}
+
+#background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.weather-container {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    z-index: 1;
+}
+
+.weather-container h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.results {
+    margin-top: 20px;
+}
+
+.weather-info {
+    text-align: center;
+}
+
+.forecast {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.forecast-item {
+    text-align: center;
+}
+
+.forecast-item img {
+    width: 50px;
+    height: 50px;
+}
+
+    </style>
+</head>
+
+<body>
+    
+    <div class="weather-container">
+        <div id="background-image"></div>
+        <h1>Recherche Météo</h1>
+        <form id="weather-form">
+            <input type="text" id="address" placeholder="Entrez une adresse" required>
+            <button type="submit">Rechercher</button>
+        </form>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        const weatherForm = document.getElementById('weather-form');
+const resultsContainer = document.getElementById('results');
+const backgroundImage = document.getElementById('background-image');
+
+const openWeatherApiKey = '76d943e957006b68b13dad3c5b61dfa8';
+
+// Tableaux d'URLs pour chaque condition météorologique
+const clearSkyImages = [
+    'https://example.com/clear-sky1.jpg',
+    'https://example.com/clear-sky2.jpg',
+    'https://example.com/clear-sky3.jpg'
+];
+
+const cloudyImages = [
+    'assets/img/cloudyImages/cloudy.jpg',
+    'assets/img/cloudyImages/cloudy0.jpg',
+    'assets/img/cloudyImages/cloudy1.jpg'
+];
+
+const rainyImages = [
+    'https://example.com/rain1.jpg',
+    'https://example.com/rain2.jpg',
+    'https://example.com/rain3.jpg'
+];
+
+const snowyImages = [
+    'https://example.com/snow1.jpg',
+    'https://example.com/snow2.jpg',
+    'https://example.com/snow3.jpg'
+];
+
+// Fonction pour sélectionner une image aléatoire
+function getRandomImage(images) {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    return images[randomIndex];
+}
+
+weatherForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const address = document.getElementById('address').value;
+
+    // Obtenir les coordonnées via Nominatim
+    try {
+        const geoResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json`);
+        const geoData = await geoResponse.json();
+
+        if (geoData.length === 0) {
+            resultsContainer.innerHTML = '<p>Aucune coordonnée trouvée.</p>';
+            return;
+        }
+
+        const { lat, lon, display_name } = geoData[0];
+
+        // Obtenir la météo via OpenWeatherMap
+        const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${openWeatherApiKey}`);
+        const weatherData = await weatherResponse.json();
+
+        const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${openWeatherApiKey}`);
+        const forecastData = await forecastResponse.json();
+
+        const weatherHTML = `
+            <div class="weather-info">
+                <h2>${display_name}</h2>
+                <p>Température : ${weatherData.main.temp}°C</p>
+                <p>Pression : ${weatherData.main.pressure} hPa</p>
+                <p>Conditions : ${weatherData.weather[0].description}</p>
+                <img src="https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png" alt="${weatherData.weather[0].description}">
+            </div>
+            <div class="forecast">
+                ${forecastData.list.slice(0, 5).map(item => `
+                    <div class="forecast-item">
+                        <p>${new Date(item.dt * 1000).toLocaleDateString()}</p>
+                        <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" alt="${item.weather[0].description}">
+                        <p>${item.main.temp}°C</p>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        resultsContainer.innerHTML = weatherHTML;
+
+        // Changer l'image d'arrière-plan en fonction des conditions météorologiques
+        const weatherCondition = weatherData.weather[0].main.toLowerCase();
+        let backgroundUrl;
+
+        switch (weatherCondition) {
+            case 'clear':
+                backgroundUrl = `url(${getRandomImage(clearSkyImages)})`;
+                break;
+            case 'clouds':
+                backgroundUrl = `url(${getRandomImage(cloudyImages)})`;
+                break;
+            case 'rain':
+                backgroundUrl = `url(${getRandomImage(rainyImages)})`;
+                break;
+            case 'snow':
+                backgroundUrl = `url(${getRandomImage(snowyImages)})`;
+                break;
+            default:
+                backgroundUrl = 'url(assets/img/cloudyImages/cloudy.jpg)';
+        }
+
+        backgroundImage.style.backgroundImage = backgroundUrl;
+    } catch (error) {
+        console.error(error);
+        resultsContainer.innerHTML = '<p>Une erreur est survenue.</p>';
+    }
+});
+
+
+    </script>
+</body>
+
+</html>
