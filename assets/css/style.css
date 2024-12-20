@@ -1,25 +1,18 @@
-/* Explication : On remet certaines marges et paddings à zéro pour avoir une base propre */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* On applique une police lisible et un alignement centré à toute la page */
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    /* background: linear-gradient(135deg, #c3ecb2, #7dd3f1); */
 
-    /* dégradé linéaire du haut vers le bas */
     background: linear-gradient(to bottom, 
-        /* Couleur du haut (rose pastel) */
         #fcc2d7 0%, 
-        /* Couleur intermédiaire (teinte claire) */
         #fbe8d3 50%, 
-        /* Couleur du bas (teinte turquoise) */
         #7dd3f1 100%
     );
     height: 100vh;
